@@ -1,0 +1,53 @@
+services:
+  neo4j:
+    image: neo4j:5
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    environment:
+      NEO4J_AUTH: neo4j/legalGraphDev
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_memory_heap_max__size: 512m
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    environment:
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: legalGraphDev
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8000
+      MCP_TRANSPORT: sse
+      MAX_DEPTH: 3
+      TOKEN_BUDGET: 20000
+      EMBEDDING_MODEL: intfloat/multilingual-e5-base
+      CRITICAL_THRESHOLD: 0.5
+      SUPPORTING_THRESHOLD: 0.3
+      TRANSFORMERS_OFFLINE: "1"
+      LOG_LEVEL: INFO
+    volumes:
+      - ./epubs:/app/epubs:ro
+      - ./src:/app/src:ro
+      - ./laws.json:/app/laws.json:ro
+      - ./hints:/app/hints:ro
+      - embedding_model_cache:/root/.cache/huggingface
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
+  embedding_model_cache:

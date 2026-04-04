@@ -1,0 +1,7 @@
+.bashrc
+.inputrc
+.Xauthority
+.venv
+.pytest_cache
+__pycache__
+.env
