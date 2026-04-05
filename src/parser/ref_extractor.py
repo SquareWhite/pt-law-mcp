@@ -4,6 +4,15 @@ import re
 
 from src.models import Article, AmbiguousReference, Reference
 
+# Matches diploma citations like "Decreto-Lei n.º 290/92", "Lei n.º 82-E/2014",
+# "Portaria n.o 1011/2001", "Decreto Regulamentar n.º 25/2009"
+_DIPLOMA_RE = re.compile(
+    r"\b(decreto[- ]lei|decreto[- ]regulamentar|lei|portaria"
+    r"|despacho(?:[- ]normativo)?)"
+    r"\s+n\.?\s*[oº°]\s*([\d]+(?:[./-][A-Z\d]+)*)",
+    re.IGNORECASE | re.UNICODE,
+)
+
 LAW_ALIASES: dict[str, str] = {
     "CIRS": "cirs",
     "CIRC": "circ",
@@ -35,6 +44,20 @@ LAW_ALIASES: dict[str, str] = {
     "RJAMT": "rjamt",
     "Código dos Regimes Contributivos do Sistema Previdencial de Segurança Social": "crcspss",
     "CRCSPSS": "crcspss",
+    # Laws planned for ingestion — aliases registered so references are extracted
+    # and coverage gaps are surfaced at startup even before the laws are loaded
+    "Regime do IVA nas Transações Intracomunitárias": "riti",
+    "RITI": "riti",
+    "Código das Sociedades Comerciais": "csc",
+    "CSC": "csc",
+    "Código do Trabalho": "ct",
+    "CT": "ct",
+    "Código Penal": "cp",
+    "CP": "cp",
+    "Código do Procedimento Administrativo": "cpa",
+    "CPA": "cpa",
+    "Incentivo Fiscal à Investigação Científica e Inovação": "ifici",
+    "IFICI": "ifici",
 }
 
 # Alias pattern for use in regexes (longest first to avoid partial matches)
@@ -197,3 +220,19 @@ def extract_refs(
         )
 
     return refs, ambiguous
+
+
+def extract_diploma_citations(text: str) -> set[str]:
+    """Return all diploma citations found in text as normalised 'type:number' strings.
+
+    These are independent of LAW_ALIASES — they surface any law referenced by its
+    official designation regardless of whether it has a registered alias.
+
+    Examples: 'decreto-lei:290/92', 'lei:7/2009', 'portaria:1011/2001'
+    """
+    citations: set[str] = set()
+    for m in _DIPLOMA_RE.finditer(text):
+        dtype = m.group(1).lower().replace(" ", "-")
+        dnum = m.group(2).strip()
+        citations.add(f"{dtype}:{dnum}")
+    return citations

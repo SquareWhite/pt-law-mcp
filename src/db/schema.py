@@ -14,6 +14,10 @@ def apply_schema(driver: Driver) -> None:
             "FOR (l:Law) REQUIRE l.id IS UNIQUE"
         )
         session.run(
+            "CREATE CONSTRAINT coverage_gap_law_id IF NOT EXISTS "
+            "FOR (g:CoverageGap) REQUIRE g.law_id IS UNIQUE"
+        )
+        session.run(
             "CREATE FULLTEXT INDEX article_text IF NOT EXISTS "
             "FOR (a:Article) ON EACH [a.text, a.title]"
         )

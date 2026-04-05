@@ -20,6 +20,7 @@ from src.db.repository import (
     get_incoming_refs,
     get_law_structure,
     get_ref_graph,
+    get_unrecognized_citations,
     get_unreferenced_law_ids,
     vector_search,
 )
@@ -46,13 +47,20 @@ MAX_DEPTH = int(os.getenv("MAX_DEPTH", "3"))
 
 def _log_missing_corpus_coverage() -> None:
     with get_db() as session:
-        missing = get_unreferenced_law_ids(session)
-    if missing:
+        missing_ids = get_unreferenced_law_ids(session)
+        unknown_citations = get_unrecognized_citations(session)
+
+    if missing_ids:
         logger.warning(
-            "Laws referenced in graph but missing from corpus: %s",
-            ", ".join(missing),
+            "Laws referenced by alias but missing from corpus: %s",
+            ", ".join(missing_ids),
         )
-    else:
+    if unknown_citations:
+        logger.warning(
+            "Diploma citations found in article text with no matching Law node: %s",
+            ", ".join(unknown_citations),
+        )
+    if not missing_ids and not unknown_citations:
         logger.info("Corpus coverage OK — all referenced laws have Law nodes")
 
 _host = os.getenv("MCP_HOST", "127.0.0.1")

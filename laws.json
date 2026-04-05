@@ -119,5 +119,83 @@
     "diploma": "decreto-lei:9/2025",
     "pdf_file": "data/pdfs/CAE_Rev_4.pdf",
     "parser": "portaria"
+  },
+  {
+    "law_id": "cp",
+    "short_name": "CP",
+    "full_name": "Código Penal",
+    "diploma": "decreto-lei:400/82",
+    "pdf_file": "data/pdfs/CP.pdf"
+  },
+  {
+    "law_id": "cpa",
+    "short_name": "CPA",
+    "full_name": "Código do Procedimento Administrativo",
+    "diploma": "decreto-lei:4/2015",
+    "pdf_file": "data/pdfs/CPA.pdf"
+  },
+  {
+    "law_id": "csc",
+    "short_name": "CSC",
+    "full_name": "Código das Sociedades Comerciais",
+    "diploma": "decreto-lei:262/86",
+    "pdf_file": "data/pdfs/CSC.pdf"
+  },
+  {
+    "law_id": "ct",
+    "short_name": "CT",
+    "full_name": "Código do Trabalho",
+    "diploma": "lei:7/2009",
+    "pdf_file": "data/pdfs/CT.pdf"
+  },
+  {
+    "law_id": "ata",
+    "short_name": "ATA",
+    "full_name": "Estatuto da Autoridade Tributária e Aduaneira",
+    "diploma": "decreto-lei:118/2011",
+    "pdf_file": "data/pdfs/ATA.pdf"
+  },
+  {
+    "law_id": "nrau",
+    "short_name": "NRAU",
+    "full_name": "Novo Regime do Arrendamento Urbano",
+    "diploma": "lei:6/2006",
+    "pdf_file": "data/pdfs/NRAU.pdf"
+  },
+  {
+    "law_id": "rcbe",
+    "short_name": "RCBE",
+    "full_name": "Regime do Registo Central do Beneficiário Efetivo",
+    "diploma": "lei:89/2017",
+    "pdf_file": "data/pdfs/RCBE.pdf"
+  },
+  {
+    "law_id": "riti",
+    "short_name": "RITI",
+    "full_name": "Regime do IVA nas Transações Intracomunitárias",
+    "diploma": "decreto-lei:290/92",
+    "pdf_file": "data/pdfs/RITI.pdf"
+  },
+  {
+    "law_id": "rjue",
+    "short_name": "RJUE",
+    "full_name": "Regime Jurídico da Urbanização e Edificação",
+    "diploma": "decreto-lei:555/99",
+    "pdf_file": "data/pdfs/RJUE.pdf"
+  },
+  {
+    "law_id": "portaria_352_2024",
+    "short_name": "Portaria 352/2024",
+    "full_name": "Portaria n.º 352/2024/1 — Regime de Incentivo Fiscal à Investigação Científica e Inovação (IFICI)",
+    "diploma": "portaria:352/2024",
+    "pdf_file": "data/pdfs/portaria_352_2024_1.pdf",
+    "parser": "portaria"
+  },
+  {
+    "law_id": "rgicsf",
+    "short_name": "RGICSF",
+    "full_name": "Regime Geral das Instituições de Crédito e Sociedades Financeiras",
+    "diploma": "decreto-lei:298/92",
+    "pdf_file": "data/pdfs/rgicsf.pdf"
   }
 ]

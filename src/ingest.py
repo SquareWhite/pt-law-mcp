@@ -24,6 +24,7 @@ from src.db.repository import (
     load_hints,
     null_embeddings,
     upsert_articles,
+    upsert_citation_gaps,
     upsert_law,
     upsert_references,
 )
@@ -32,7 +33,7 @@ from src.models import AmbiguousReference, Article, Law, Reference
 from src.parser.article_splitter import split_articles
 from src.parser.epub_reader import read_epub
 from src.parser.pdf_reader import read_pdf
-from src.parser.ref_extractor import extract_refs
+from src.parser.ref_extractor import extract_diploma_citations, extract_refs
 
 AMBIGUOUS_FILE = Path("ambiguous_refs.json")
 
@@ -144,10 +145,12 @@ def cmd_load(args: argparse.Namespace) -> None:
 
     all_refs: list[Reference] = []
     all_ambiguous: list[AmbiguousReference] = []
+    all_citations: set[str] = set()
     for article in articles:
         refs, ambiguous = extract_refs(article)
         all_refs.extend(refs)
         all_ambiguous.extend(ambiguous)
+        all_citations |= extract_diploma_citations(article.text or "")
 
     additional = _resolve_relative_refs(articles, all_ambiguous)
     all_refs.extend(additional)
@@ -163,6 +166,7 @@ def cmd_load(args: argparse.Namespace) -> None:
         upsert_articles(session, articles)
         delete_refs_from(session, [a.id for a in articles])
         upsert_references(session, all_refs)
+        upsert_citation_gaps(session, all_citations)
 
     _save_ambiguous([a.model_dump() for a in remaining_ambiguous])
 

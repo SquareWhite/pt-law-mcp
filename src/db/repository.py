@@ -49,6 +49,7 @@ def upsert_references(session: Session, refs: list[Reference]) -> None:
     data = [r.model_dump() for r in refs]
     for i in range(0, len(data), _BATCH_SIZE):
         batch = data[i : i + _BATCH_SIZE]
+        # Create edges only when both article nodes exist
         session.run(
             """
             UNWIND $batch AS r
@@ -58,6 +59,18 @@ def upsert_references(session: Session, refs: list[Reference]) -> None:
             SET rel.context         = r.context,
                 rel.ref_type        = r.ref_type,
                 rel.target_fragment = r.target_fragment
+            """,
+            batch=batch,
+        )
+        # Record any target law that has no Law node so the coverage check can surface it
+        session.run(
+            """
+            UNWIND $batch AS r
+            WITH split(r.target_id, ':')[0] AS law_id
+            WHERE law_id IS NOT NULL
+              AND NOT EXISTS { MATCH (:Law {id: law_id}) }
+            WITH DISTINCT law_id
+            MERGE (:CoverageGap {law_id: law_id})
             """,
             batch=batch,
         )
@@ -223,13 +236,64 @@ def get_ref_graph(session: Session, article_id: str, depth: int) -> dict:
     }
 
 
-def get_unreferenced_law_ids(session: Session) -> list[str]:
-    """Return law IDs that appear in REFERENCES edges but have no Law node."""
+def upsert_citation_gaps(session: Session, citations: set[str]) -> None:
+    """Persist diploma citations that don't match any ingested Law as CoverageGap nodes."""
+    if not citations:
+        return
+    session.run(
+        """
+        UNWIND $citations AS citation
+        WITH citation,
+             split(citation, ':')[0] AS dtype,
+             split(citation, ':')[1] AS dnum
+        WHERE NOT EXISTS {
+            MATCH (l:Law)
+            WHERE l.diploma_type = dtype AND l.diploma_number = dnum
+        }
+        MERGE (:CoverageGap {citation: citation})
+        """,
+        citations=list(citations),
+    )
+
+
+def get_unrecognized_citations(session: Session) -> list[str]:
+    """Return diploma citations stored as CoverageGap that still have no matching Law node."""
     result = session.run(
         """
+        MATCH (g:CoverageGap)
+        WHERE g.citation IS NOT NULL
+          AND NOT EXISTS {
+            MATCH (l:Law)
+            WHERE g.citation = l.diploma_type + ':' + l.diploma_number
+          }
+        RETURN g.citation ORDER BY g.citation
+        """
+    )
+    return [record["g.citation"] for record in result]
+
+
+def get_unreferenced_law_ids(session: Session) -> list[str]:
+    """Return law IDs referenced in article text but missing from the corpus.
+
+    Combines two sources:
+    - REFERENCES edges where the target law has no Law node (laws that were
+      partially ingested or referenced within the currently loaded corpus)
+    - CoverageGap nodes recorded during ingestion when a referenced target
+      article didn't exist yet (catches laws that are referenced but never
+      ingested at all)
+    """
+    result = session.run(
+        """
+        // Source 1: target law_ids of stored REFERENCES edges with no Law node
         MATCH (a:Article)-[:REFERENCES]->(b:Article)
-        WITH collect(DISTINCT a.law_id) + collect(DISTINCT b.law_id) AS referenced_law_ids
-        UNWIND referenced_law_ids AS law_id
+        WITH collect(DISTINCT b.law_id) AS edge_law_ids
+
+        // Source 2: CoverageGap nodes recorded for dropped references
+        MATCH (g:CoverageGap)
+        WHERE NOT EXISTS { MATCH (:Law {id: g.law_id}) }
+        WITH edge_law_ids, collect(g.law_id) AS gap_law_ids
+
+        UNWIND edge_law_ids + gap_law_ids AS law_id
         WITH DISTINCT law_id
         WHERE law_id IS NOT NULL AND NOT EXISTS { MATCH (:Law {id: law_id}) }
         RETURN law_id
