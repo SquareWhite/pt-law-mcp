@@ -20,6 +20,7 @@ from src.db.repository import (
     get_incoming_refs,
     get_law_structure,
     get_ref_graph,
+    get_unreferenced_law_ids,
     vector_search,
 )
 from src.models import (
@@ -41,6 +42,18 @@ from src.utils import (
 )
 
 MAX_DEPTH = int(os.getenv("MAX_DEPTH", "3"))
+
+
+def _log_missing_corpus_coverage() -> None:
+    with get_db() as session:
+        missing = get_unreferenced_law_ids(session)
+    if missing:
+        logger.warning(
+            "Laws referenced in graph but missing from corpus: %s",
+            ", ".join(missing),
+        )
+    else:
+        logger.info("Corpus coverage OK — all referenced laws have Law nodes")
 
 _host = os.getenv("MCP_HOST", "127.0.0.1")
 _port = int(os.getenv("MCP_PORT", "8000"))
@@ -175,5 +188,6 @@ def get_ref_graph_tool(article_id: str, depth: int = 2) -> RefGraphResult:
 
 
 if __name__ == "__main__":
+    _log_missing_corpus_coverage()
     transport = os.getenv("MCP_TRANSPORT", "stdio")
     mcp.run(transport=transport)  # type: ignore[arg-type]

@@ -41,10 +41,9 @@ services:
       TRANSFORMERS_OFFLINE: "1"
       LOG_LEVEL: INFO
     volumes:
-      - ./epubs:/app/epubs:ro
+      - ./data:/app/data:ro
       - ./src:/app/src:ro
       - ./laws.json:/app/laws.json:ro
-      - ./hints:/app/hints:ro
       - embedding_model_cache:/root/.cache/huggingface
 
 volumes:

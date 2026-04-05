@@ -25,7 +25,7 @@ echo "Embedding articles without embeddings..."
 python -m src.ingest embed-missing
 
 echo "Loading summary hints..."
-python -m src.ingest load-hints-dir --dir /app/hints
+python -m src.ingest load-hints-dir --dir /app/data/hints
 
 echo "Starting MCP server..."
 exec python -m src.server

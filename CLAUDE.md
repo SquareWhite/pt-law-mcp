@@ -4,7 +4,7 @@
 
 A local MCP server that ingests Portuguese tax law EPUBs, parses them into individual articles, extracts cross-references between articles, and stores everything as a graph in Neo4j. LLM clients (e.g. Claude Desktop) connect via MCP and use the exposed tools to navigate the law graph with automatic reference expansion.
 
-The whole system runs via `docker compose up` — no manual steps beyond dropping EPUB files into `epubs/`.
+The whole system runs via `docker compose up` — no manual steps beyond dropping source files into `data/epubs/` or `data/pdfs/`.
 
 ## Laws covered
 
@@ -30,7 +30,7 @@ The whole system runs via `docker compose up` — no manual steps beyond droppin
 ## Architecture
 
 ```
-epubs/ → ingest.py → parse articles → extract cross-refs → Neo4j graph
+data/{epubs,pdfs}/ → ingest.py → parse articles → extract cross-refs → Neo4j graph
                                                                ↑
                                          MCP server (tools) ←─┘
 ```
@@ -62,8 +62,10 @@ src/
     ├── connection.py      Neo4j driver singleton + get_session() context manager
     ├── schema.py          Constraints, fulltext index, vector index
     └── repository.py      All Neo4j queries
-epubs/                     Drop EPUB files here (gitignored)
-hints/                     Drop summary hint JSON files here (gitignored)
+data/
+├── epubs/                 Drop EPUB files here (gitignored)
+├── pdfs/                  Drop PDF files here (gitignored)
+└── hints/                 Drop summary hint JSON files here (gitignored)
 laws.json                  Law metadata + epub paths for load-all
 entrypoint.sh              Docker startup sequence
 ```

@@ -33,6 +33,8 @@ LAW_ALIASES: dict[str, str] = {
     "RCPITA": "rcpita",
     "Regime Jurídico da Arbitragem em Matéria Tributária": "rjamt",
     "RJAMT": "rjamt",
+    "Código dos Regimes Contributivos do Sistema Previdencial de Segurança Social": "crcspss",
+    "CRCSPSS": "crcspss",
 }
 
 # Alias pattern for use in regexes (longest first to avoid partial matches)

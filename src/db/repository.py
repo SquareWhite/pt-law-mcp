@@ -223,6 +223,22 @@ def get_ref_graph(session: Session, article_id: str, depth: int) -> dict:
     }
 
 
+def get_unreferenced_law_ids(session: Session) -> list[str]:
+    """Return law IDs that appear in REFERENCES edges but have no Law node."""
+    result = session.run(
+        """
+        MATCH (a:Article)-[:REFERENCES]->(b:Article)
+        WITH collect(DISTINCT a.law_id) + collect(DISTINCT b.law_id) AS referenced_law_ids
+        UNWIND referenced_law_ids AS law_id
+        WITH DISTINCT law_id
+        WHERE law_id IS NOT NULL AND NOT EXISTS { MATCH (:Law {id: law_id}) }
+        RETURN law_id
+        ORDER BY law_id
+        """
+    )
+    return [record["law_id"] for record in result]
+
+
 def embed_missing_articles(driver: Driver, embedder: Any) -> int:
     from src.embeddings import prepare_embedding_text
 

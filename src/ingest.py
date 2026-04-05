@@ -28,12 +28,41 @@ from src.db.repository import (
     upsert_references,
 )
 from src.db.schema import apply_schema
-from src.models import AmbiguousReference, Law, Reference
+from src.models import AmbiguousReference, Article, Law, Reference
 from src.parser.article_splitter import split_articles
 from src.parser.epub_reader import read_epub
+from src.parser.pdf_reader import read_pdf
 from src.parser.ref_extractor import extract_refs
 
 AMBIGUOUS_FILE = Path("ambiguous_refs.json")
+
+
+def _read_source(file_path: str) -> list[tuple[str, str]]:
+    path = Path(file_path)
+    if path.suffix.lower() == ".pdf":
+        return read_pdf(path)
+    return read_epub(path)
+
+
+def _ingest_as_single_document(
+    chapters: list[tuple[str, str]], law_id: str, title: str
+) -> list[Article]:
+    """Return the entire document as one Article — no splitting."""
+    from bs4 import BeautifulSoup
+
+    parts: list[str] = []
+    for _, html in chapters:
+        soup = BeautifulSoup(html, "lxml")
+        parts.append(soup.get_text("\n", strip=True))
+    return [
+        Article(
+            id=f"{law_id}:art:1",
+            law_id=law_id,
+            number="1",
+            title=title,
+            text="\n\n".join(parts),
+        )
+    ]
 
 
 def _load_ambiguous() -> list[dict]:
@@ -106,8 +135,12 @@ def cmd_load(args: argparse.Namespace) -> None:
         diploma_number=diploma_number,
     )
 
-    chapters = read_epub(Path(args.file))
-    articles = split_articles(chapters, args.law_id)
+    chapters = _read_source(args.file)
+    parser = getattr(args, "parser", "auto")
+    if parser == "portaria":
+        articles = _ingest_as_single_document(chapters, args.law_id, args.full_name)
+    else:
+        articles = split_articles(chapters, args.law_id)
 
     all_refs: list[Reference] = []
     all_ambiguous: list[AmbiguousReference] = []
@@ -150,8 +183,8 @@ def cmd_update(args: argparse.Namespace) -> None:
     apply_schema(driver)
 
     target_numbers = set(args.articles.split(","))
-    chapters = read_epub(Path(args.file))
-    all_articles = split_articles(chapters, args.law_id)
+    chapters = _read_source(args.file)
+    all_articles = split_articles(chapters, args.law_id)  # update only supports standard laws
     articles = [a for a in all_articles if a.number in target_numbers]
 
     if not articles:
@@ -216,18 +249,19 @@ def cmd_load_all(args: argparse.Namespace) -> None:
     laws_config = json.loads(config_path.read_text())
 
     for entry in laws_config:
-        epub_path = Path(entry["epub_file"])
-        if not epub_path.exists():
-            logger.warning("SKIP %s: %s not found", entry["law_id"], epub_path)
+        file_path = Path(entry.get("pdf_file") or entry.get("epub_file", ""))
+        if not file_path or not file_path.exists():
+            logger.warning("SKIP %s: %s not found", entry["law_id"], file_path)
             continue
-        logger.info("Loading %s from %s ...", entry["law_id"], epub_path)
+        logger.info("Loading %s from %s ...", entry["law_id"], file_path)
         load_args = argparse.Namespace(
             command="load",
             law_id=entry["law_id"],
             short_name=entry["short_name"],
             full_name=entry["full_name"],
             diploma=entry["diploma"],
-            file=str(epub_path),
+            file=str(file_path),
+            parser=entry.get("parser", "auto"),
         )
         cmd_load(load_args)
 
@@ -306,6 +340,8 @@ def main() -> None:
     p_load.add_argument("--full-name", required=True)
     p_load.add_argument("--diploma", required=True, help="type:number e.g. decreto-lei:442-A/88")
     p_load.add_argument("--file", required=True)
+    p_load.add_argument("--parser", default="auto", choices=["auto", "portaria"],
+                        help="Parser to use: 'auto' splits into articles, 'portaria' ingests as single document")
 
     # update
     p_update = sub.add_parser("update")

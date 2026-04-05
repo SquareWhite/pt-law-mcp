@@ -4,97 +4,120 @@
     "short_name": "CIRS",
     "full_name": "Código do Imposto sobre o Rendimento das Pessoas Singulares",
     "diploma": "decreto-lei:442-A/88",
-    "epub_file": "epubs/CIRS.epub"
+    "epub_file": "data/epubs/CIRS.epub"
   },
   {
     "law_id": "circ",
     "short_name": "CIRC",
     "full_name": "Código do Imposto sobre o Rendimento das Pessoas Coletivas",
     "diploma": "decreto-lei:442-B/88",
-    "epub_file": "epubs/CIRC.epub"
+    "epub_file": "data/epubs/CIRC.epub"
   },
   {
     "law_id": "civa",
     "short_name": "CIVA",
     "full_name": "Código do Imposto sobre o Valor Acrescentado",
     "diploma": "decreto-lei:394-B/84",
-    "epub_file": "epubs/CIVA.epub"
+    "epub_file": "data/epubs/CIVA.epub"
   },
   {
     "law_id": "lgt",
     "short_name": "LGT",
     "full_name": "Lei Geral Tributária",
     "diploma": "decreto-lei:398/98",
-    "epub_file": "epubs/LGT_072025.epub"
+    "epub_file": "data/epubs/LGT_072025.epub"
   },
   {
     "law_id": "cppt",
     "short_name": "CPPT",
     "full_name": "Código de Procedimento e de Processo Tributário",
     "diploma": "decreto-lei:433/99",
-    "epub_file": "epubs/CPPT_072025.epub"
+    "epub_file": "data/epubs/CPPT_072025.epub"
   },
   {
     "law_id": "ebf",
     "short_name": "EBF",
     "full_name": "Estatuto dos Benefícios Fiscais",
     "diploma": "decreto-lei:215/89",
-    "epub_file": "epubs/EBF.epub"
+    "epub_file": "data/epubs/EBF.epub"
   },
   {
     "law_id": "cis",
     "short_name": "CIS",
     "full_name": "Código do Imposto do Selo",
     "diploma": "decreto-lei:287/2003",
-    "epub_file": "epubs/CIS.epub"
+    "epub_file": "data/epubs/CIS.epub"
   },
   {
     "law_id": "cimi",
     "short_name": "CIMI",
     "full_name": "Código do Imposto Municipal sobre Imóveis",
     "diploma": "decreto-lei:287/2003",
-    "epub_file": "epubs/CIMI.epub"
+    "epub_file": "data/epubs/CIMI.epub"
   },
   {
     "law_id": "cimt",
     "short_name": "CIMT",
     "full_name": "Código do Imposto Municipal sobre as Transmissões Onerosas de Imóveis",
     "diploma": "decreto-lei:287/2003",
-    "epub_file": "epubs/CIMT.epub"
+    "epub_file": "data/epubs/CIMT.epub"
   },
   {
     "law_id": "ciuc",
     "short_name": "CIUC",
     "full_name": "Código do Imposto Único de Circulação",
     "diploma": "lei:22-A/2007",
-    "epub_file": "epubs/CIUC.epub"
+    "epub_file": "data/epubs/CIUC.epub"
   },
   {
     "law_id": "cfi",
     "short_name": "CFI",
     "full_name": "Código Fiscal do Investimento",
     "diploma": "decreto-lei:162/2014",
-    "epub_file": "epubs/CFI.epub"
+    "epub_file": "data/epubs/CFI.epub"
   },
   {
     "law_id": "rgit",
     "short_name": "RGIT",
     "full_name": "Regime Geral das Infrações Tributárias",
     "diploma": "lei:15/2001",
-    "epub_file": "epubs/RGIT.epub"
+    "epub_file": "data/epubs/RGIT.epub"
   },
   {
     "law_id": "rcpita",
     "short_name": "RCPITA",
     "full_name": "Regime Complementar do Procedimento de Inspeção Tributária e Aduaneira",
     "diploma": "decreto-lei:413/98",
-    "epub_file": "epubs/RCPITA_072025.epub"
+    "epub_file": "data/epubs/RCPITA_072025.epub"
   },
   {
     "law_id": "rjamt",
     "short_name": "RJAMT",
     "full_name": "Regime Jurídico da Arbitragem em Matéria Tributária",
     "diploma": "decreto-lei:10/2011",
-    "epub_file": "epubs/RJAMT.epub"
+    "epub_file": "data/epubs/RJAMT.epub"
+  },
+  {
+    "law_id": "crcspss",
+    "short_name": "CRCSPSS",
+    "full_name": "Código dos Regimes Contributivos do Sistema Previdencial de Segurança Social",
+    "diploma": "lei:110/2009",
+    "pdf_file": "data/pdfs/CRCSPSS.pdf"
+  },
+  {
+    "law_id": "portaria_1011_2001",
+    "short_name": "Portaria 1011/2001",
+    "full_name": "Tabela de Actividades do Artigo 151.º do CIRS",
+    "diploma": "portaria:1011/2001",
+    "pdf_file": "data/pdfs/portaria_1011_2001.pdf",
+    "parser": "portaria"
+  },
+  {
+    "law_id": "cae",
+    "short_name": "CAE-Rev.4",
+    "full_name": "Classificação Portuguesa das Atividades Económicas, Revisão 4",
+    "diploma": "decreto-lei:9/2025",
+    "pdf_file": "data/pdfs/CAE_Rev_4.pdf",
+    "parser": "portaria"
   }
 ]
