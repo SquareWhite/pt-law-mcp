@@ -197,5 +197,33 @@
     "full_name": "Regime Geral das Instituições de Crédito e Sociedades Financeiras",
     "diploma": "decreto-lei:298/92",
     "pdf_file": "data/pdfs/rgicsf.pdf"
+  },
+  {
+    "law_id": "cc",
+    "short_name": "CC",
+    "full_name": "Código Civil",
+    "diploma": "decreto-lei:47344/66",
+    "pdf_file": "data/pdfs/CC.pdf"
+  },
+  {
+    "law_id": "ce",
+    "short_name": "CE",
+    "full_name": "Código da Estrada",
+    "diploma": "lei:72/2013",
+    "pdf_file": "data/pdfs/CE.pdf"
+  },
+  {
+    "law_id": "cpc",
+    "short_name": "CPC",
+    "full_name": "Código de Processo Civil",
+    "diploma": "lei:41/2013",
+    "pdf_file": "data/pdfs/CPC.pdf"
+  },
+  {
+    "law_id": "cpp",
+    "short_name": "CPP",
+    "full_name": "Código de Processo Penal",
+    "diploma": "decreto-lei:78/87",
+    "pdf_file": "data/pdfs/CPP.pdf"
   }
 ]
