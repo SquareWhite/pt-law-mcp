@@ -8,7 +8,7 @@ The whole system runs via `docker compose up` — no manual steps beyond droppin
 
 ## Laws covered
 
-14 Portuguese tax laws defined in `laws.json`:
+Laws defined in `laws.json` (tax laws + other codes):
 
 | ID | Short name | Full name |
 |----|-----------|-----------|

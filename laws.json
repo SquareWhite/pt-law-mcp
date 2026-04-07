@@ -225,5 +225,12 @@
     "full_name": "Código de Processo Penal",
     "diploma": "decreto-lei:78/87",
     "pdf_file": "data/pdfs/CPP.pdf"
+  },
+  {
+    "law_id": "crp",
+    "short_name": "CRP",
+    "full_name": "Constituição da República Portuguesa",
+    "diploma": "lei-constitucional:1/76",
+    "pdf_file": "data/pdfs/constitution.pdf"
   }
 ]
