@@ -38,7 +38,7 @@ Add this to your `claude_desktop_config.json`:
 {
   "mcpServers": {
     "portuguese-law": {
-      "url": "http://localhost:8000/sse"
+      "url": "http://localhost:8000/mcp"
     }
   }
 }
@@ -115,7 +115,7 @@ python -m src.ingest embed-missing
 | `EMBEDDING_MODEL` | `intfloat/multilingual-e5-base` | Sentence-transformers model for embeddings |
 | `MCP_HOST` | `127.0.0.1` | |
 | `MCP_PORT` | `8000` | |
-| `MCP_TRANSPORT` | `stdio` | `stdio` or `sse` |
+| `MCP_TRANSPORT` | `stdio` | `stdio`, `sse`, or `streamable-http` |
 | `MAX_DEPTH` | `3` | Max reference expansion depth |
 | `TOKEN_BUDGET` | `8000` | Max words in flat `read_article` response |
 | `CRITICAL_THRESHOLD` | `0.5` | Normalised cosine sim threshold for critical refs |

@@ -32,7 +32,7 @@ services:
       NEO4J_PASSWORD: legalGraphDev
       MCP_HOST: 0.0.0.0
       MCP_PORT: 8000
-      MCP_TRANSPORT: sse
+      MCP_TRANSPORT: streamable-http
       MAX_DEPTH: 3
       TOKEN_BUDGET: 20000
       EMBEDDING_MODEL: intfloat/multilingual-e5-base
